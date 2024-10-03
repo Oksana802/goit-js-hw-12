@@ -12,10 +12,10 @@ let query = '';
 let totalHits = 0;
 
 formEl.addEventListener('submit', async (event) => {
-  event.preventDefault();
-  query = event.target.elements.q.value.trim();
-  
-  if (!query) {
+    event.preventDefault();
+    query = event.target.elements.q.value.trim();
+
+    if (!query) {
     iziToast.error({
         message: 'Please enter a search query.',
         title: '',
@@ -31,18 +31,18 @@ formEl.addEventListener('submit', async (event) => {
     
     return;
 }
-  
-  page = 1;
-  galleryEl.innerHTML = '';
-  loaderEl.style.display = 'block';   
-  loadMoreBtn.style.display = 'none';
 
-  try {
+    page = 1;
+    galleryEl.innerHTML = '';
+    loaderEl.style.display = 'block';   
+    loadMoreBtn.style.display = 'none';
+
+    try {
     const data = await fetchImages({ q: query }, page);
     loaderEl.style.display = 'none';
     
     if (data.hits.length === 0) {
-      iziToast.error({
+    iziToast.error({
         backgroundColor: 'rgba(239, 64, 64, 1)',
         message: 'Sorry, there are no images matching <br>your search query. Please try again!',
         icon: 'my-custom-icon',
@@ -52,8 +52,8 @@ formEl.addEventListener('submit', async (event) => {
         position: "topRight",
         messageColor: 'rgba(255, 255, 255, 1)',
         maxWidth: '432px'
-      });
-      return;
+    });
+    return;
     }
 
     renderGallery(data.hits);
@@ -61,44 +61,44 @@ formEl.addEventListener('submit', async (event) => {
     totalHits = data.totalHits;
     
     if (page * 15 < totalHits) {
-      loadMoreBtn.style.display = 'block';
+    loadMoreBtn.style.display = 'block';
     }
-  } catch (error) {
+} catch (error) {
     loaderEl.style.display = 'none';
     iziToast.error({
-      title: 'Error',
-      message: error.message,
+    title: 'Error',
+    message: error.message,
     });
-  } 
+} 
 });
 
 loadMoreBtn.addEventListener('click', async () => {
-  page += 1;
-  loaderEl.style.display = 'block';
+page += 1;
+loaderEl.style.display = 'block';
 
-  try {
+try {
     const data = await fetchImages({ q: query }, page);
     loaderEl.style.display = 'none';
     renderGallery(data.hits);
 
     if (page * 15 >= totalHits) {
-      loadMoreBtn.style.display = 'none';
-      iziToast.info({
+    loadMoreBtn.style.display = 'none';
+    iziToast.info({
         message: "We're sorry, but you've reached the end of search results.",
-      });
+    });
     }
 
     window.scrollBy({
       top: galleryEl.lastElementChild.getBoundingClientRect().height * 2,
-      behavior: 'smooth',
+    behavior: 'smooth',
     });
-  
 
-  } catch (error) {
+
+} catch (error) {
     loaderEl.style.display = 'none';
     iziToast.error({
-      title: 'Error',
-      message: error.message,
+    title: 'Error',
+    message: error.message,
     });
-  }
+}
 });
